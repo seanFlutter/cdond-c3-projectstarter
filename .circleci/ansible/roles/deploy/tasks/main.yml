@@ -29,10 +29,10 @@
     production: yes
     state: present
     
-# - name: "Create Backend App Directory"
-#   file:
-#     path: ~/backend_app_dir
-#     state: directory
+- name: Create Backend App Directory
+  file:
+    path: ~/backend_app_dir
+    state: directory
 
 - name: "Copy artifact into Instance" 
   become: true
