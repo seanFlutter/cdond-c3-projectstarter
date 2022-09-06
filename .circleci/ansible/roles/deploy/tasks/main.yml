@@ -29,7 +29,7 @@
     production: yes
     state: present
     
-- name: Create Backend App Directory
+- name: "Create Backend App Directory"
   file:
     path: ~/backend_app_dir
     state: directory
