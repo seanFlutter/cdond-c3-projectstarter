@@ -210,14 +210,14 @@ jobs:
           keys: [backend-build]
           
       # - run:
-      #     name: Install dependenciess
+      #     name: Install dependencies
       #     command: |
       #       apk add --update --no-cache nodejs npm aws-cli
       - run:
           name: Run migrations
           command: |
             cd backend
-            npm install
+            sudo npm install -g npm
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - run:
