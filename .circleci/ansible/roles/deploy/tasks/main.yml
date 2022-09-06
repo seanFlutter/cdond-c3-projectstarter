@@ -28,6 +28,12 @@
     global: yes
     production: yes
     state: present
+    
+- name: "Copy artifact into Instance"
+  become: true
+  copy:
+    src: ~/project/artifact.tar.gz
+    dest: /home/ubuntu/backend_app_dir/artifact.tar.gz
 
 - name: "Copy artifact into Instance" 
   become: true
