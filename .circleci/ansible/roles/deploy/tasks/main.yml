@@ -29,11 +29,10 @@
     production: yes
     state: present
     
-- name: "Copy artifact into Instance"
-  become: true
-  copy:
-    src: ~/project/artifact.tar.gz
-    dest: /home/ubuntu/backend_app_dir/artifact.tar.gz
+- name: Create Backend App Directory
+  file:
+    path: ~/backend_app_dir
+    state: directory
 
 - name: "Copy artifact into Instance" 
   become: true
