@@ -466,7 +466,7 @@ workflows:
       # - scan-backend:
       #     requires: [build-backend]
       # - scan-frontend:
-          requires: [build-frontend]
+          # requires: [build-frontend]
       - deploy-infrastructure:
           requires: [build-frontend, build-backend]
       #     filters:
