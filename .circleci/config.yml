@@ -81,9 +81,7 @@ jobs:
       # Docker image here
       - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      
       - checkout
       - restore_cache:
           keys: [frontend-build]
@@ -210,10 +208,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
           
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       apk add --update --no-cache nodejs npm aws-cli
+      
       - run:
           name: Run migrations
           command: |
@@ -231,7 +226,6 @@ jobs:
             
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-    # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
     docker:
@@ -251,12 +245,7 @@ jobs:
             pip install awscli
 
 
-            # apk add --update --no-cache tar
-            # apk add --update --no-cache gzip
-            # apk add --update --no-cache nodejs
-            # apk add --update --no-cache npm
-            # apk add --update --no-cache aws-cli
-            # apk add --update --no-cache curl 
+            
       - run:
           name: Get backend url
           command: |
@@ -393,18 +382,7 @@ jobs:
           command: |
             apk add --update curl
             pip install awscli
-      # - run:
-      #     name: Get old stack workflow id
-      #     command: |
-      #       export OldWorkflowID=$(aws cloudformation \
-      #         list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-      #         --no-paginate --output text | grep -o '[^-]*$' )
-      #       echo $OldWorkflowID >> ~/project/OldWorkflowID.txt
-      #       cat ~/project/OldWorkflowID.txt
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/OldWorkflowID.txt
+      
       - run:
           name: Update cloudfront distribution
           command: |
@@ -452,50 +430,37 @@ jobs:
             else
               echo "----------------Cannot Cleanup-----------------"
             fi
-      # - run:
-      #     name: Remove old stacks and files
-      #     command: |
-      #       export OldWorkflowID=$(cat ~/project/OldWorkflowID.txt)
-      #       if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
-      #       then
-      #         echo "Deleting old stack"
-      #         echo "s3://udapeople-${OldWorkflowID}"
-      #         aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive || true
-      #         aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}" || true
-      #         aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}" || true
-      #       else
-      #         echo "Stack is the latest"
-      #       fi
+      
             
 workflows:
   default:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-#       - deploy-infrastructure:
-#           requires: [build-frontend, build-backend]
-#           filters:
-#             branches:
-#               only: [master]
-#       - configure-infrastructure:
-#           requires: [deploy-infrastructure]
-#       - run-migrations:
-#           requires: [configure-infrastructure]
-#       - deploy-frontend:
-#           requires: [run-migrations]
-#       - deploy-backend:
-#           requires: [run-migrations]
-#       - smoke-test:
-#           requires: [deploy-backend, deploy-frontend]
-#       - cloudfront-update:
-#           requires: [smoke-test]
-#       - cleanup:
-#           requires: [cloudfront-update]
+#       - test-frontend:
+#           requires: [build-frontend]
+#       - test-backend:
+#           requires: [build-backend]
+#       - scan-backend:
+#           requires: [build-backend]
+#       - scan-frontend:
+#           requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [build-frontend, build-backend]
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
